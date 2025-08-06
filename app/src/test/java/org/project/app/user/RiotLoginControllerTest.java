@@ -52,7 +52,6 @@ public class RiotLoginControllerTest {
     }
 
 
-    @Disabled("아직 기능 구현이 완료되지 않았습니다.")
     @DisplayName("신규 사용자가 라이엇 OAuth2.0으로 성공적으로 로그인한다")
     @Test
     void handleRiotCallback_forNewUser_returnsLoginResult() throws Exception {
