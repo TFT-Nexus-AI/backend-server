@@ -2,6 +2,7 @@ package org.project.domain.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -10,6 +11,8 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+
+    @Transactional
     public User registerUser(String puuid, String gameName, String tagLine) {
         Optional<User> existingUser = userRepository.findByPuuid(puuid);
 
