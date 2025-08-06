@@ -13,11 +13,11 @@ public class User {
     private final LocalDateTime createdAt;
 
     @Builder
-    public User(String puuid, String gameName, String tagLine) {
+    public User(String puuid, String gameName, String tagLine, LocalDateTime createdAt) {
         this.puuid = puuid;
         this.gameName = gameName;
         this.tagLine = tagLine;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
     }
 
     public static User create(String puuid, String gameName, String tagLine) {
@@ -25,8 +25,14 @@ public class User {
         validateGameName(gameName);
         validateTagLine(tagLine);
 
-        return new User(puuid, gameName, tagLine);
+        return User.builder()
+                .puuid(puuid)
+                .gameName(gameName)
+                .tagLine(tagLine)
+                .createdAt(LocalDateTime.now())
+                .build();
     }
+
 
     private static void validateTagLine(String tagLine) {
         if (tagLine == null || tagLine.trim().isEmpty()) {
