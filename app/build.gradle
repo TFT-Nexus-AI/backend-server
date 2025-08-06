@@ -1,0 +1,12 @@
+
+
+dependencies {
+    // 우리가 만든 다른 모듈들을 모두 포함
+    implementation project(':domain')
+    runtimeOnly project(':storage:db-core')
+
+    // 웹 애플리케이션 구성을 위한 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    testRuntimeOnly 'com.h2database:h2'
+}

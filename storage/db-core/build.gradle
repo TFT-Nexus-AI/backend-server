@@ -1,0 +1,8 @@
+
+dependencies {
+    compileOnly project(':domain')
+    // DB 연동에 필요한 JPA와 드라이버
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
+}
