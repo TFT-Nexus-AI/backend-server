@@ -9,7 +9,7 @@ public class LoginResult {
     private final User user;
     private final String errorMessage;
 
-    private LoginResult(boolean success, User user, String errorMessage) {
+    public LoginResult(boolean success, User user, String errorMessage) {
         this.success = success;
         this.user = user;
         this.errorMessage = errorMessage;

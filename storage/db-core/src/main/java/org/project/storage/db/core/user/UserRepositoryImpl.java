@@ -13,9 +13,8 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public Optional<User> findByPuuid(String puuid) {
-        return userJpaRepository.findByPuuid(puuid)
-                .map(this::entityToDomain);
+    public void deleteAll() {
+        userJpaRepository.deleteAll();
     }
 
     @Override
@@ -23,6 +22,11 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity entity = domainToEntity(user);
         UserEntity savedEntity = userJpaRepository.save(entity);
         return entityToDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<User> findByPuuid(String puuid) {
+        return Optional.empty();
     }
 
     private User entityToDomain(UserEntity entity) {

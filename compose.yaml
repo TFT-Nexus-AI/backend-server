@@ -1,1 +1,16 @@
 services:
+  db:
+    image: mysql:8.0
+    container_name: tft-nexus-ai-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tft_nexus_ai_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
