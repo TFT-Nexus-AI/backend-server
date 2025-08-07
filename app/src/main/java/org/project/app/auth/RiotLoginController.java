@@ -1,4 +1,4 @@
-package org.project.app.user;
+package org.project.app.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

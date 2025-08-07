@@ -1,8 +1,6 @@
 package org.project.app.user;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.project.app.client.RiotApiClient;
 import org.project.app.exception.LoginException;
 import org.project.app.exception.RiotApiException;
 import org.project.domain.user.User;
@@ -29,11 +27,11 @@ public class OAuth2LoginUseCaseTest {
     void loginSuccessWithOAuth2() {
         // given
         String accessToken = "riot-access-token-123";
-        RiotUserInfo riotUserInfo = new RiotUserInfo("test-puuid-123", "TestPlayer", "KR1");
+        RiotApiClient.RiotUserInfo riotUserInfo = new RiotApiClient.RiotUserInfo("test-puuid-123", "TestPlayer", "KR1");
         User expectedUser = User.create("test-puuid-123", "TestPlayer", "KR1");
 
         when(riotApiClient.getUserInfo(accessToken)).thenReturn(riotUserInfo);
-        when(userService.registerUser(riotUserInfo.getPuuid(), riotUserInfo.getGameName(), riotUserInfo.getTagLine()))
+        when(userService.registerUser(riotUserInfo.puuid(), riotUserInfo.gameName(), riotUserInfo.tagLine()))
                 .thenReturn(expectedUser);
 
         // when

@@ -1,4 +1,4 @@
-package org.project.app.user;
+package org.project.app.auth;
 
 import org.springframework.stereotype.Component;
 

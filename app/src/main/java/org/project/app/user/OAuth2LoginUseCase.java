@@ -1,20 +1,22 @@
 package org.project.app.user;
 
-import lombok.RequiredArgsConstructor;
+import org.project.app.client.RiotApiClient;
+import org.project.app.exception.LoginException;
 import org.project.app.exception.RiotApiException;
-import org.springframework.stereotype.Service;
-
 import org.project.domain.user.User;
 import org.project.domain.user.UserService;
-
-import org.project.app.exception.LoginException;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-@RequiredArgsConstructor
 public class OAuth2LoginUseCase {
     private final UserService userService;
     private final RiotApiClient riotApiClient;
+
+    public OAuth2LoginUseCase(UserService userService, RiotApiClient riotApiClient) {
+        this.userService = userService;
+        this.riotApiClient = riotApiClient;
+    }
 
     public LoginResult login(String accessToken) {
         if (!StringUtils.hasText(accessToken)) {
@@ -22,8 +24,8 @@ public class OAuth2LoginUseCase {
         }
 
         try {
-            RiotUserInfo riotUserInfo = riotApiClient.getUserInfo(accessToken);
-            User user = userService.registerUser(riotUserInfo.getPuuid(), riotUserInfo.getGameName(), riotUserInfo.getTagLine());
+            RiotApiClient.RiotUserInfo riotUserInfo = riotApiClient.getUserInfo(accessToken);
+            User user = userService.registerUser(riotUserInfo.puuid(), riotUserInfo.gameName(), riotUserInfo.tagLine());
             return LoginResult.success(user);
         } catch (RiotApiException e) {
             throw new LoginException("로그인에 실패했습니다: " + e.getMessage(), e);
