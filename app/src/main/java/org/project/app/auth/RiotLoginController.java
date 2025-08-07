@@ -1,6 +1,8 @@
 package org.project.app.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.project.app.user.LoginResult;
+import org.project.app.user.OAuth2LoginUseCase;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;

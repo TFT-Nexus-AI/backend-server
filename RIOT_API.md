@@ -3,6 +3,11 @@
 이 문서는 TFT-Nexus-AI 프로젝트에서 사용하는 라이엇 게임즈 API의 명세를 정리합니다.
 
 ---
+## 0. Default Riot API Endpoint
+- https://[REGION].api.riotgames.com/
+- 각 API 에서 DEFAULT 로 가지는 riot api 지역마다 REGION 이 바뀜
+- AMERICAS,ASIA,ESPORTS,ESPORTSEU,EUROPE,SEA resigon **Select Region to Execute Against** 이 각 api 마다 있음
+- 각 resion 선택하면 REIGION 부분에 소문자로 치환되어서 들어감
 
 ## 1. Account API
 
@@ -11,6 +16,7 @@
 `gameName`과 `tagLine`으로 사용자의 PUUID를 조회합니다.
 
 - **Endpoint**: `GET /riot/account/v1/accounts/by-riot-id/{gameName}/{tagLine}`
+- **Select Region to Execute Against**
 - **Headers**:
     - `X-Riot-Token`: (Your Riot API Key)
 - **Path Parameters**:
@@ -36,6 +42,7 @@
     - `endTime` (long, optional): 검색 종료 시간 (Unix timestamp)
     - `start` (int, optional, default: 0): 결과 목록의 시작 인덱스
     - `count` (int, optional, default: 20): 반환할 Match ID의 개수
+- **Select Region to Execute Against**
 - **Return Value**: `List<string>` (Match ID 목록)
 
 ### 2.2 Match 상세 정보 조회

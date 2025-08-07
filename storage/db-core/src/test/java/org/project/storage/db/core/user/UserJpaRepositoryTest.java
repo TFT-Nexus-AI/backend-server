@@ -16,6 +16,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Tag;
+
+@Tag("context")
 @DataJpaTest
 @ActiveProfiles("test")
 public class UserJpaRepositoryTest {

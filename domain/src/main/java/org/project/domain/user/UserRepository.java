@@ -6,6 +6,7 @@ public interface UserRepository {
     User save(User user);
 
     Optional<User> findByPuuid(String puuid);
+    long count();
 
     void deleteAll();
 }

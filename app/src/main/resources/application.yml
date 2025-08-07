@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: app
+
+logging:
+  level:
+    org.springframework.web.client.RestTemplate: DEBUG
+    org.project.app.client.RiotApiClientImpl: DEBUG
+
+riot:
+  api:
+    # This key will be loaded from the .env file or environment variables
+    key: ${RIOT_API_KEY}
+    url:
+      asia: https://asia.api.riotgames.com
+      americas: https://americas.api.riotgames.com
+      europe: https://europe.api.riotgames.com

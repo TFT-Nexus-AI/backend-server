@@ -2,7 +2,7 @@ package org.project.storage.db.core.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import org.project.domain.user.User;
 import java.time.LocalDateTime;
 
 @Entity
@@ -28,11 +28,31 @@ public class UserEntity {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+
+
     @Builder
-    public UserEntity(String puuid, String gameName, String tagLine, LocalDateTime createdAt) {
+    private UserEntity(String puuid, String gameName, String tagLine, LocalDateTime createdAt) {
         this.puuid = puuid;
         this.gameName = gameName;
         this.tagLine = tagLine;
         this.createdAt = createdAt;
+    }
+
+    public User toDomain() {
+        return User.builder()
+                .puuid(this.puuid)
+                .gameName(this.gameName)
+                .tagLine(this.tagLine)
+                .createdAt(this.createdAt)
+                .build();
+    }
+
+    public static UserEntity fromDomain(User user) {
+        return UserEntity.builder()
+                .puuid(user.getPuuid())
+                .gameName(user.getGameName())
+                .tagLine(user.getTagLine())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

@@ -1,9 +1,11 @@
-package org.project.app.user;
+package org.project.app.auth;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.project.app.client.RiotApiClient;
+import org.project.app.user.FakeRiotTokenProvider;
+import org.project.app.user.MockRiotApiClient;
 import org.project.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * - [ ] **성공 (기존 사용자)**: 유효한 코드로 재로그인 시, 기존 사용자의 정보를 업데이트하고 성공 응답을 반환한다.
  * - [ ] **실패 (입력값 오류)**: `code` 파라미터 없이 요청 시, 400 Bad Request 오류를 반환한다.
  */
+import org.junit.jupiter.api.Tag;
+
+@Tag("context")
 @SpringBootTest
 @AutoConfigureMockMvc
 public class RiotLoginControllerTest {

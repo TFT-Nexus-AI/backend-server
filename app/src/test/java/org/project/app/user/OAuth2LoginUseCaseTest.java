@@ -1,5 +1,8 @@
 package org.project.app.user;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.project.app.client.RiotApiClient;
 import org.project.app.exception.LoginException;
 import org.project.app.exception.RiotApiException;

@@ -1,6 +1,7 @@
 package org.project.storage.db.core.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.project.domain.user.User;
 import org.project.domain.user.UserRepository;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,8 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+@Slf4j
+public class UserRepositoryImpl implements UserRepository{
     private final UserJpaRepository userJpaRepository;
 
     @Override
@@ -19,33 +21,27 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        UserEntity entity = domainToEntity(user);
+        log.info("Saving user: {}", user.getPuuid());
+        UserEntity entity = UserEntity.fromDomain(user);
         UserEntity savedEntity = userJpaRepository.save(entity);
-        return entityToDomain(savedEntity);
+        log.info("User saved with ID: {}", savedEntity.getId());
+        return savedEntity.toDomain();
     }
 
     @Override
     public Optional<User> findByPuuid(String puuid) {
-        return Optional.empty();
+        log.info("Finding user by puuid: {}", puuid);
+        Optional<User> foundUser = userJpaRepository.findByPuuid(puuid).map(UserEntity::toDomain);
+        if (foundUser.isPresent()) {
+            log.info("User found: {}", foundUser.get().getPuuid());
+        } else {
+            log.info("User not found for puuid: {}", puuid);
+        }
+        return foundUser;
     }
 
-    private User entityToDomain(UserEntity entity) {
-        return User.builder()
-                .puuid(entity.getPuuid())
-                .gameName(entity.getGameName())
-                .tagLine(entity.getTagLine())
-                .createdAt(entity.getCreatedAt())
-                .build();
+    @Override
+    public long count() {
+        return userJpaRepository.count();
     }
-
-    private UserEntity domainToEntity(User user) {
-        return UserEntity.builder()
-                .puuid(user.getPuuid())
-                .gameName(user.getGameName())
-                .tagLine(user.getTagLine())
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-
-
 }
