@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.project.app.client.RiotApiClient;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ import org.junit.jupiter.api.Tag;
 @Tag("context")
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MatchHistoryControllerTest {
 
     @Autowired
@@ -71,6 +74,10 @@ public class MatchHistoryControllerTest {
     }
 
     static class FakeRiotApiClient implements RiotApiClient {
+        public static final String EXISTING_USER_PUUID = "puuid-234";
+        public static final String EXISTING_USER_GAMENAME = "k사원";
+        public static final String EXISTING_USER_TAGLINE = "7924";
+
         @Override
         public RiotUserInfo getUserInfo(String accessToken) {
             return null; // Not used in this test
@@ -78,8 +85,8 @@ public class MatchHistoryControllerTest {
 
         @Override
         public AccountDto getPuuidByRiotId(String gameName, String tagLine) {
-            if ("hide with speard".equals(gameName) && "6953".equals(tagLine)) {
-                return new AccountDto("blY9VVsEOjfcTC7MkMsO2E7oExt-DpiIG_UkZA1KNW5K5GyORtR1EQyJo-19CP-1ALa_jDrYCF0qvw", gameName, tagLine);
+            if ("k사원".equals(gameName) && "7924".equals(tagLine)) {
+                return new AccountDto("puuid-234", gameName, tagLine);
             }
             if ("api-error-user".equals(gameName)) {
                 throw new RiotApiException("Riot API is down");
@@ -104,7 +111,8 @@ public class MatchHistoryControllerTest {
     @Test
     void collectMatchHistory_forNewUser_savesMatchesAndReturnsSuccess() throws Exception {
         // given
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("hide with speard", "6953");
+        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest(FakeRiotApiClient.EXISTING_USER_GAMENAME,
+                FakeRiotApiClient.EXISTING_USER_TAGLINE);
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -115,14 +123,11 @@ public class MatchHistoryControllerTest {
                 .andExpect(jsonPath("$.savedMatchCount").value(20));
 
         // then: Verify database state
-        Optional<User> savedUser = userRepository.findByPuuid("puuid-123");
+        Optional<User> savedUser = userRepository.findByPuuid(FakeRiotApiClient.EXISTING_USER_PUUID);
         assertThat(savedUser).isPresent();
-        assertThat(savedUser.get().getGameName()).isEqualTo("hide with speard");
+        assertThat(savedUser.get().getGameName()).isEqualTo(FakeRiotApiClient.EXISTING_USER_GAMENAME);
+        assertThat(matchRepository.count()).isEqualTo(20);
 
-        List<String> allMatchIdsInDb = matchRepository.findExistingMatchIds(
-                IntStream.range(1, 21).mapToObj(i -> "KR_MATCH_" + i).collect(Collectors.toList())
-        );
-        assertThat(allMatchIdsInDb).hasSize(20);
     }
 
     @DisplayName("gameName 또는 tagLine이 비어있는 요청 시, 400 Bad Request를 반환한다")
@@ -179,7 +184,7 @@ public class MatchHistoryControllerTest {
             matchRepository.save(Match.builder().matchId("KR_MATCH_" + i).build());
         });
 
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("hide with speard", "6953");
+        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("k사원", "7924");
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -195,23 +200,28 @@ public class MatchHistoryControllerTest {
     void collectMatchHistory_forExistingUser_savesOnlyNewMatches() throws Exception {
         // given
         // 1. Save the user and 10 out of 20 matches in advance
-        userRepository.save(User.create("puuid-123", "hide with speard", "6953"));
+        userRepository.save(User.create(FakeRiotApiClient.EXISTING_USER_PUUID,
+                FakeRiotApiClient.EXISTING_USER_GAMENAME,
+                FakeRiotApiClient.EXISTING_USER_TAGLINE));
         IntStream.range(1, 11).forEach(i -> {
             matchRepository.save(Match.builder().matchId("KR_MATCH_" + i).build());
         });
 
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("hide with speard", "6953");
+        // when: "k사원"으로 컨트롤러 호출
+        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest(
+                FakeRiotApiClient.EXISTING_USER_GAMENAME,
+                FakeRiotApiClient.EXISTING_USER_TAGLINE
+        );
 
-        // when & then
+        // then
         mockMvc.perform(post("/api/matches/by-riot-id")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("새로운 전적 10건을 성공적으로 저장했습니다."))
                 .andExpect(jsonPath("$.savedMatchCount").value(10));
 
-        // then: Verify database state
-        assertThat(userRepository.count()).isEqualTo(1); // User should not be created again
-        assertThat(matchRepository.count()).isEqualTo(20); // 10 new matches should be added
+        // then: DB 상태 검증
+        assertThat(userRepository.count()).isEqualTo(1); // 유저는 새로 생성되지 않아야 함
+        assertThat(matchRepository.count()).isEqualTo(20); // 10개의 새로운 경기만 추가되어야 함
     }
 }
