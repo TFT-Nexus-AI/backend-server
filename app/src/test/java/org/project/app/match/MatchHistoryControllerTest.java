@@ -58,8 +58,8 @@ public class MatchHistoryControllerTest {
 
     @BeforeEach
     void setUp() {
-//        userRepository.deleteAll();
-//        matchRepository.deleteAll();
+        userRepository.deleteAll();
+        matchRepository.deleteAll();
     }
 
     @TestConfiguration
