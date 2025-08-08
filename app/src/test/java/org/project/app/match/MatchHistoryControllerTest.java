@@ -11,6 +11,8 @@ import org.project.domain.match.Match;
 import org.project.domain.match.MatchRepository;
 import org.project.domain.user.User;
 import org.project.domain.user.UserRepository;
+import org.project.app.match.dto.CollectMatchHistoryRequest;
+import org.project.app.match.dto.CollectMatchHistoryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -129,7 +131,7 @@ public class MatchHistoryControllerTest {
     @Test
     void collectMatchHistory_forNewUser_savesMatchesAndReturnsSuccess() throws Exception {
         // given
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest(FakeRiotApiClient.EXISTING_USER_GAMENAME,
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest(FakeRiotApiClient.EXISTING_USER_GAMENAME,
                 FakeRiotApiClient.EXISTING_USER_TAGLINE);
 
         // when & then
@@ -165,7 +167,7 @@ public class MatchHistoryControllerTest {
     })
     void collectMatchHistory_withInvalidRequest_returnsBadRequest(String gameName, String tagLine) throws Exception {
         // given
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest(gameName, tagLine);
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest(gameName, tagLine);
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -178,7 +180,7 @@ public class MatchHistoryControllerTest {
     @Test
     void collectMatchHistory_withNonExistentRiotId_returnsNotFound() throws Exception {
         // given
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("없는유저", "KR1");
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest("없는유저", "KR1");
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -191,7 +193,7 @@ public class MatchHistoryControllerTest {
     @Test
     void collectMatchHistory_whenRiotApiFails_returnsServiceUnavailable() throws Exception {
         // given
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("api-error-user", "KR1");
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest("api-error-user", "KR1");
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -209,7 +211,7 @@ public class MatchHistoryControllerTest {
             matchRepository.save(Match.builder().matchId("KR_MATCH_" + i).build());
         });
 
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest("k사원", "7924");
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest("k사원", "7924");
 
         // when & then
         mockMvc.perform(post("/api/matches/by-riot-id")
@@ -238,7 +240,7 @@ public class MatchHistoryControllerTest {
         });
 
         // when: "k사원"으로 컨트롤러 호출
-        MatchHistoryController.CollectMatchHistoryRequest request = new MatchHistoryController.CollectMatchHistoryRequest(
+        CollectMatchHistoryRequest request = new CollectMatchHistoryRequest(
                 FakeRiotApiClient.EXISTING_USER_GAMENAME,
                 FakeRiotApiClient.EXISTING_USER_TAGLINE
         );

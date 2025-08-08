@@ -7,22 +7,25 @@ import org.project.app.client.RiotApiClient;
 import org.project.app.exception.LoginException;
 import org.project.app.exception.RiotApiException;
 import org.project.domain.user.User;
-import org.project.domain.user.UserService;
+import org.project.domain.user.UserRepository;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class OAuth2LoginUseCaseTest {
-    private UserService userService;
+public class UserServiceTest {
+    private UserRepository userRepository;
     private RiotApiClient riotApiClient;
-    private OAuth2LoginUseCase oauth2LoginUseCase;
+    private UserService userService;
 
     @BeforeEach
     void setUp() {
-        userService = mock(UserService.class);
+        userRepository = mock(UserRepository.class);
         riotApiClient = mock(RiotApiClient.class);
-        oauth2LoginUseCase = new OAuth2LoginUseCase(userService, riotApiClient);
+        userService = new UserService(userRepository, riotApiClient);
     }
 
     @Test
@@ -34,18 +37,19 @@ public class OAuth2LoginUseCaseTest {
         User expectedUser = User.create("test-puuid-123", "TestPlayer", "KR1");
 
         when(riotApiClient.getUserInfo(accessToken)).thenReturn(riotUserInfo);
-        when(userService.registerUser(riotUserInfo.puuid(), riotUserInfo.gameName(), riotUserInfo.tagLine()))
-                .thenReturn(expectedUser);
+        when(userRepository.findByPuuid(riotUserInfo.puuid())).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(expectedUser);
 
         // when
-        LoginResult result = oauth2LoginUseCase.login(accessToken);
+        LoginResult result = userService.login(accessToken);
 
         // then
         assertThat(result.isSuccess()).isTrue();
         assertThat(result.getUser().getPuuid()).isEqualTo("test-puuid-123");
         assertThat(result.getUser().getGameName()).isEqualTo("TestPlayer");
         assertThat(result.getUser().getTagLine()).isEqualTo("KR1");
-        verify(userService).registerUser("test-puuid-123", "TestPlayer", "KR1");
+        verify(userRepository).findByPuuid("test-puuid-123");
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -57,7 +61,7 @@ public class OAuth2LoginUseCaseTest {
                 .thenThrow(new RiotApiException("Invalid access token"));
 
         // when & then
-        assertThatThrownBy(() -> oauth2LoginUseCase.login(invalidToken))
+        assertThatThrownBy(() -> userService.login(invalidToken))
                 .isInstanceOf(LoginException.class)
                 .hasMessage("로그인에 실패했습니다: Invalid access token");
     }
@@ -69,7 +73,7 @@ public class OAuth2LoginUseCaseTest {
         String nullToken = null;
 
         // when & then
-        assertThatThrownBy(() -> oauth2LoginUseCase.login(nullToken))
+        assertThatThrownBy(() -> userService.login(nullToken))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("액세스 토큰은 필수입니다");
     }
@@ -81,7 +85,7 @@ public class OAuth2LoginUseCaseTest {
         String emptyToken = "";
 
         // when & then
-        assertThatThrownBy(() -> oauth2LoginUseCase.login(emptyToken))
+        assertThatThrownBy(() -> userService.login(emptyToken))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("액세스 토큰은 필수입니다");
     }
