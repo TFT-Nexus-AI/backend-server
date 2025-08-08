@@ -16,11 +16,19 @@ public class MatchEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 50)
     private String matchId;
+    
+    @Column(nullable = false)
     private Long gameDatetime;
+    
+    @Column(nullable = false)
     private Float gameLength;
+    
+    @Column(nullable = false, length = 20)
     private String gameVersion;
+    
+    @Column(nullable = false, length = 50)
     private String tftSet;
 
     @Builder

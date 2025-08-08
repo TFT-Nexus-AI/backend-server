@@ -27,21 +27,28 @@ public class MatchRepositoryImpl implements MatchRepository {
                 .gameVersion(match.getGameVersion())
                 .tftSet(match.getTftSet())
                 .build();
-        matchJpaRepository.save(entity);
-        return match;
+        MatchEntity savedEntity = matchJpaRepository.save(entity);
+        return Match.of(
+                savedEntity.getId(),
+                savedEntity.getMatchId(),
+                savedEntity.getGameDatetime(),
+                savedEntity.getGameLength(),
+                savedEntity.getGameVersion(),
+                savedEntity.getTftSet()
+        );
     }
 
     @Override
     public List<Match> findAll() {
         return matchJpaRepository.findAll().stream()
-                .map(entity -> Match.builder()
-                        .id(entity.getId())
-                        .matchId(entity.getMatchId())
-                        .gameDatetime(entity.getGameDatetime())
-                        .gameLength(entity.getGameLength())
-                        .gameVersion(entity.getGameVersion())
-                        .tftSet(entity.getTftSet())
-                        .build())
+                .map(entity -> Match.of(
+                        entity.getId(),
+                        entity.getMatchId(),
+                        entity.getGameDatetime(),
+                        entity.getGameLength(),
+                        entity.getGameVersion(),
+                        entity.getTftSet()
+                ))
                 .collect(java.util.stream.Collectors.toList());
     }
 
