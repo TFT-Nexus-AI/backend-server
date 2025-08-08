@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,8 +66,19 @@ public class CollectMatchHistoryUseCase {
             // 3. Save new matches
             log.info("Saving {} new matches.", newMatchIds.size());
             for (String matchId : newMatchIds) {
-                matchRepository.save(Match.builder().matchId(matchId).build());
-                log.debug("Saved match: {}", matchId);
+                RiotApiClient.MatchDto matchDto = riotApiClient.getMatchDetailByMatchId(matchId);
+                if (matchDto != null && matchDto.info() != null) {
+                    matchRepository.save(Match.builder()
+                            .matchId(matchDto.metadata().match_id())
+                            .gameDatetime(matchDto.info().game_datetime())
+                            .gameLength(matchDto.info().game_length())
+                            .gameVersion(matchDto.info().game_version())
+                            .tftSet(matchDto.info().tft_set_core_name())
+                            .build());
+                    log.debug("Saved match: {}", matchId);
+                } else {
+                    log.warn("Failed to retrieve match details for matchId: {}", matchId);
+                }
             }
 
             log.info("Successfully saved {} new matches.", newMatchIds.size());

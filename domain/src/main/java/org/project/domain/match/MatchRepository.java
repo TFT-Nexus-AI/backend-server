@@ -7,4 +7,5 @@ public interface MatchRepository {
     Match save(Match match);
     long count();
     void deleteAll();
+    List<Match> findAll();
 }

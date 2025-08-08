@@ -8,5 +8,8 @@ import lombok.Getter;
 public class Match {
     private Long id;
     private String matchId;
-    // 경기 상세 정보 필드들은 추후 추가될 예정입니다.
+    private Long gameDatetime;
+    private Float gameLength;
+    private String gameVersion;
+    private String tftSet;
 }

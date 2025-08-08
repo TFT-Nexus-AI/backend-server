@@ -18,9 +18,17 @@ public class MatchEntity {
 
     @Column(unique = true, nullable = false)
     private String matchId;
+    private Long gameDatetime;
+    private Float gameLength;
+    private String gameVersion;
+    private String tftSet;
 
     @Builder
-    private MatchEntity(String matchId) {
+    private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, String tftSet) {
         this.matchId = matchId;
+        this.gameDatetime = gameDatetime;
+        this.gameLength = gameLength;
+        this.gameVersion = gameVersion;
+        this.tftSet = tftSet;
     }
 }

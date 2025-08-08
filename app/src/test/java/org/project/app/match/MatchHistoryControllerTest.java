@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.Tag;
 @Tag("context")
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MatchHistoryControllerTest {
 
     @Autowired
@@ -103,7 +103,25 @@ public class MatchHistoryControllerTest {
 
         @Override
         public MatchDto getMatchDetailByMatchId(String matchId) {
-            return new MatchDto();
+            return new MatchDto(
+                    new RiotApiClient.MetadataDto("data_version", matchId, List.of("puuid1", "puuid2")),
+                    new RiotApiClient.InfoDto(
+                            "endOfGameResult",
+                            1234567890L,
+                            123L, // gameId
+                            1234567890L, // game_datetime (example value)
+                            123.4f, // game_length
+                            "gameVersion",
+                            123,
+                            new java.util.ArrayList<RiotApiClient.ParticipantDto>(), // participants
+                            123,
+                            "tft_game_type",
+                            "tft_set_core_name",
+                            123,
+                            "game_variation",
+                            123
+                    )
+            );
         }
     }
 
@@ -127,6 +145,13 @@ public class MatchHistoryControllerTest {
         assertThat(savedUser).isPresent();
         assertThat(savedUser.get().getGameName()).isEqualTo(FakeRiotApiClient.EXISTING_USER_GAMENAME);
         assertThat(matchRepository.count()).isEqualTo(20);
+        // Verify saved match details
+        matchRepository.findAll().forEach(match -> {
+            assertThat(match.getGameDatetime()).isNotNull();
+            assertThat(match.getGameLength()).isNotNull();
+            assertThat(match.getGameVersion()).isNotNull();
+            assertThat(match.getTftSet()).isNotNull();
+        });
 
     }
 
@@ -199,12 +224,17 @@ public class MatchHistoryControllerTest {
     @Test
     void collectMatchHistory_forExistingUser_savesOnlyNewMatches() throws Exception {
         // given
-        // 1. Save the user and 10 out of 20 matches in advance
         userRepository.save(User.create(FakeRiotApiClient.EXISTING_USER_PUUID,
                 FakeRiotApiClient.EXISTING_USER_GAMENAME,
                 FakeRiotApiClient.EXISTING_USER_TAGLINE));
         IntStream.range(1, 11).forEach(i -> {
-            matchRepository.save(Match.builder().matchId("KR_MATCH_" + i).build());
+            matchRepository.save(Match.builder()
+                    .matchId("KR_MATCH_" + i)
+                    .gameDatetime(1234567890L)
+                    .gameLength(123.4f)
+                    .gameVersion("gameVersion")
+                    .tftSet("tft_set_core_name")
+                    .build());
         });
 
         // when: "k사원"으로 컨트롤러 호출
@@ -223,5 +253,12 @@ public class MatchHistoryControllerTest {
         // then: DB 상태 검증
         assertThat(userRepository.count()).isEqualTo(1); // 유저는 새로 생성되지 않아야 함
         assertThat(matchRepository.count()).isEqualTo(20); // 10개의 새로운 경기만 추가되어야 함
+        // Verify saved match details
+        matchRepository.findAll().forEach(match -> {
+            assertThat(match.getGameDatetime()).isNotNull();
+            assertThat(match.getGameLength()).isNotNull();
+            assertThat(match.getGameVersion()).isNotNull();
+            assertThat(match.getTftSet()).isNotNull();
+        });
     }
 }

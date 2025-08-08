@@ -20,10 +20,29 @@ public class MatchRepositoryImpl implements MatchRepository {
 
     @Override
     public Match save(Match match) {
-        MatchEntity entity = MatchEntity.builder().matchId(match.getMatchId()).build();
+        MatchEntity entity = MatchEntity.builder()
+                .matchId(match.getMatchId())
+                .gameDatetime(match.getGameDatetime())
+                .gameLength(match.getGameLength())
+                .gameVersion(match.getGameVersion())
+                .tftSet(match.getTftSet())
+                .build();
         matchJpaRepository.save(entity);
-        // For simplicity, we don't map back to domain object yet
         return match;
+    }
+
+    @Override
+    public List<Match> findAll() {
+        return matchJpaRepository.findAll().stream()
+                .map(entity -> Match.builder()
+                        .id(entity.getId())
+                        .matchId(entity.getMatchId())
+                        .gameDatetime(entity.getGameDatetime())
+                        .gameLength(entity.getGameLength())
+                        .gameVersion(entity.getGameVersion())
+                        .tftSet(entity.getTftSet())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
     }
 
     @Override

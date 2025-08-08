@@ -10,10 +10,10 @@ import org.project.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,22 +38,23 @@ public class RiotLoginControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @MockBean
+    private RiotTokenProvider riotTokenProvider;
+
+    @MockBean
+    private RiotApiClient riotApiClient;
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
-    }
 
-    @TestConfiguration
-    static class TestConfig {
-        @Bean
-        public RiotTokenProvider riotTokenProvider() {
-            return new FakeRiotTokenProvider();
-        }
+        // Mock RiotTokenProvider behavior
+        when(riotTokenProvider.getAccessToken(anyString()))
+                .thenReturn("mock-access-token");
 
-        @Bean
-        public RiotApiClient riotApiClient() {
-            return new MockRiotApiClient();
-        }
+        // Mock RiotApiClient behavior
+        when(riotApiClient.getUserInfo(anyString()))
+                .thenReturn(new RiotApiClient.RiotUserInfo("test-puuid-123", "TestPlayer", "KR1"));
     }
 
 
