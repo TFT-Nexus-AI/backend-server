@@ -28,7 +28,7 @@ TFT-Nexus-AI/
 │   ├── user/              # 사용자 영속성
 │   ├── match/             # 전적 영속성
 │   └── analysis/          # 분석 영속성
-└── clients/                # External Integration
+└── client/                # External Integration
     ├── riot-api/          # Riot API 클라이언트
     └── ai-client/         # AI API 클라이언트
 ```
