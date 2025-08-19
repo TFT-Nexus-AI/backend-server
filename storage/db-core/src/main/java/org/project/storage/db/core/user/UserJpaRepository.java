@@ -8,4 +8,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, String> {
     boolean existsByGameNameAndTagLine(String gameName, String tagLine);
 
     Optional<UserEntity> findByGameNameAndTagLine(String gameName, String tagLine);
+
+
+
 }
