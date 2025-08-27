@@ -27,7 +27,7 @@ spring:
 # Riot API 설정 (실제 API Key 필요)
 riot:
   api:
-    key: ${RIOT_API_KEY:RGAPI-a4c6fb04-0bd9-4830-b452-77ebe37a47b4}
+    key: ${RIOT_API_KEY}
     url:
       asia: https://asia.api.riotgames.com
 
