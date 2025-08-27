@@ -1,17 +1,46 @@
+# app/src/main/resources/application.yml
 spring:
   application:
-    name: app
+    name: tft-nexus-ai
+  
+  # 프로필별 설정 활성화
+  profiles:
+    active: local
+  
+  # .env 파일 import
+  config:
+    import: optional:file:.env[.properties]
+  
+  # 데이터베이스 설정 (storage 모듈용)
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
 
-logging:
-  level:
-    org.springframework.web.client.RestTemplate: DEBUG
-    org.project.app.client.RiotApiClientImpl: DEBUG
-
+# Riot API 설정
 riot:
   api:
-    # This key will be loaded from the .env file or environment variables
     key: ${RIOT_API_KEY}
     url:
       asia: https://asia.api.riotgames.com
       americas: https://americas.api.riotgames.com
       europe: https://europe.api.riotgames.com
+
+# 로깅 설정
+logging:
+  level:
+    org.springframework.web.client: DEBUG
+    org.project.client: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

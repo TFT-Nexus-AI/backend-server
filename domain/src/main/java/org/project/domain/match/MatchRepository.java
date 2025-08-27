@@ -7,9 +7,9 @@ import java.util.Optional;
 
 @Repository
 public interface MatchRepository {
-    Optional<Match> findByMatchId(String matchId);
+    List<Match> findByUserPuuidOrderByGameDatetimeDesc(String puuid, int limit);
 
-    List<Match> findByPuuid(String puuid);
+    Optional<Match> findByMatchId(String matchId);
 
     Match save(Match match);
 

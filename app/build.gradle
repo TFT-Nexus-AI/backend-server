@@ -3,7 +3,7 @@
 dependencies {
     // 우리가 만든 다른 모듈들을 모두 포함
     implementation project(':domain')
-    implementation project(':client:riot-api')
+    runtimeOnly project(':client:riot-api')
     runtimeOnly project(':storage:db-core')
 
     // 웹 애플리케이션 구성을 위한 의존성

@@ -1,7 +1,7 @@
 package org.project.domain.user;
 
 import lombok.RequiredArgsConstructor;
-import org.project.client.riot.api.RiotUserClient;
+
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -18,6 +18,7 @@ public class UserFinder {
         if (user.isPresent()) {
             return user.get();
         }
-
+        User newUser = riotUserClient.getUserFromRiotApi(gameName, tagLine);
+        return userRepository.save(newUser);
     }
 }
