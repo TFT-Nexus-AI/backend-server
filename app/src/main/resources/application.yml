@@ -9,7 +9,19 @@ spring:
   
   # .env 파일 import
   config:
-    import: optional:file:.env[.properties]
+    import:
+      - optional:file:.env[.properties]
+      - storage-db-core.yml
+      - client-riot-api.yml
+
+server:
+  port: 8080
+  tomcat:
+    max-connections: 20000
+    threads:
+      max: 600
+      min-spare: 100
+
   
   # 데이터베이스 설정 (storage 모듈용)
   datasource:
@@ -17,30 +29,34 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  
-  # JPA 설정
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
 
-# Riot API 설정
-riot:
-  api:
-    key: ${RIOT_API_KEY}
-    url:
-      asia: https://asia.api.riotgames.com
-      americas: https://americas.api.riotgames.com
-      europe: https://europe.api.riotgames.com
 
-# 로깅 설정
-logging:
-  level:
-    org.springframework.web.client: DEBUG
-    org.project.client: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live

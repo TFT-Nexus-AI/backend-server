@@ -1,38 +1,37 @@
-# app/src/test/resources/application-test.yml
 spring:
-  # .env import
+  application:
+    name: tft-nexus-ai-test
+
   config:
-    import: optional:file:.env[.properties]
-  
+    import:
+      - optional:file:.env[.properties]
+      - db-core.yml
+      - client-riot-api.yml
+
   # 테스트용 H2 DB 설정
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
-    password:
-  
+    password: ""
+
   jpa:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
     defer-datasource-initialization: true
-  
-  # 테스트용 SQL 초기화
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
-      data-locations: classpath:data.sql
 
-# Riot API 설정 (실제 API Key 필요)
+# Riot API 테스트 설정
 riot:
   api:
     key: ${RIOT_API_KEY}
     url:
       asia: https://asia.api.riotgames.com
+      americas: https://americas.api.riotgames.com
+      europe: https://europe.api.riotgames.com
 
 logging:
   level:
     org.springframework.web.client: DEBUG
-    org.project: DEBUG
+    org.nexusai: DEBUG
     org.hibernate: DEBUG
