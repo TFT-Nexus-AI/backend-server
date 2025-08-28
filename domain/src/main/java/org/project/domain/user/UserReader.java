@@ -13,12 +13,9 @@ public class UserReader {
 
 
     public Optional<User> read(String gameName, String tagLine) {
-        try {
-            return userRepository.findByGameNameAndTagLine(gameName, tagLine);
 
-        } catch (Exception e) {
-            throw new UserNotFoundException(gameName, tagLine);
-        }
+        return userRepository.findByGameNameAndTagLine(gameName, tagLine);
+
 
     }
 }

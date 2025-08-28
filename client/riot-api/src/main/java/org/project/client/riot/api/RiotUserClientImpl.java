@@ -1,7 +1,8 @@
 package org.project.client.riot.api;
 
-import org.project.app.exception.RiotApiException;
-import org.project.app.exception.UserNotFoundException;
+
+import org.project.domain.exception.RiotApiException;
+import org.project.domain.exception.UserNotFoundException;
 import org.project.domain.user.RiotUserClient;
 import org.project.domain.user.User;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +34,10 @@ public class RiotUserClientImpl implements RiotUserClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
                     return Mono.error(new UserNotFoundException(
-                            "사용자를 찾을 수 없습니다: " + gameName + "#" + tagLine));
+                            gameName, tagLine));
                 })
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
-                    return Mono.error(new RiotApiException("Riot API 서버 오류"));
+                    return Mono.error(new RiotApiException());
                 })
                 .bodyToMono(RiotAccountDto.class)
                 .block();

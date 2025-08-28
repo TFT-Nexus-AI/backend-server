@@ -1,6 +1,6 @@
 package org.project.client.riot.api;
 
-import org.project.app.exception.MatchNotFoundException;
+import org.project.domain.exception.MatchNotFoundException;
 import org.project.domain.match.Match;
 import org.project.domain.match.RiotMatchClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,7 @@ import java.util.List;
 public class RiotMatchClientImpl implements RiotMatchClient {
     private final WebClient webClient;
 
-    public RiotMatchClientImpl(WebClient.Builder webClientBuilder,  @Value("${riot.api.url.asia}") String riotApiUrl, @Value("${riot.api.key}") String apiKey) {
+    public RiotMatchClientImpl(WebClient.Builder webClientBuilder, @Value("${riot.api.url.asia}") String riotApiUrl, @Value("${riot.api.key}") String apiKey) {
         this.webClient = webClientBuilder
                 .baseUrl(riotApiUrl)
                 .defaultHeader("X-Riot-Token", apiKey)
@@ -31,7 +31,7 @@ public class RiotMatchClientImpl implements RiotMatchClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
                     return Mono.error(new MatchNotFoundException(
-                            "매치를 찾을 수 없습니다: " + puuid));
+                            puuid));
                 })
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 })

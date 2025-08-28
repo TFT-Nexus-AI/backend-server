@@ -1,8 +1,6 @@
 package org.project.app;
 
 import org.junit.jupiter.api.*;
-import org.project.app.exception.MatchNotFoundException;
-import org.project.app.exception.UserNotFoundException;
 import org.project.domain.match.Match;
 import org.project.domain.match.MatchService;
 import org.project.domain.match.RiotMatchClient;
