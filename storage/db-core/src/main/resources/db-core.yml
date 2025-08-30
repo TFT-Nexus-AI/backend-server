@@ -1,32 +1,33 @@
-storage:
-  # Database 설정
-  datasource:
-    url: jdbc:mysql://localhost:3306/tft_nexus_ai_db?serverTimezone=UTC&characterEncoding=UTF-8
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      maximum-pool-size: 20
-      minimum-idle: 5
-      idle-timeout: 300000
-      connection-timeout: 20000
-      validation-timeout: 5000
-
-  # JPA 설정
+spring:
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: validate
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-    show-sql: false
+    properties:
+      hibernate.default_batch_fetch_size: 100
+
+---
+spring.config.activate.on-profile: local
+
+spring:
+  jpa:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
-        jdbc:
-          batch_size: 20
-        order_inserts: true
-        order_updates: true
+        show_sql: true
+
+storage:
+  datasource:
+    core:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:core;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      username: sa
+      password:  # 빈 값 또는 생략
+      maximum-pool-size: 10
+      minimum-idle: 2
+      pool-name: core-db-pool
+      data-source-properties:
+        rewriteBatchedStatements: true
 
   # Flyway 마이그레이션
   flyway:
@@ -34,55 +35,19 @@ storage:
     baseline-on-migrate: true
     locations: classpath:db/migration
 
----
-spring:
-  config:
-    activate:
-      on-profile: local
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
 
 ---
-spring:
-  config:
-    activate:
-      on-profile: local-dev
+spring.config.activate.on-profile: local-dev
 storage:
   datasource:
     core:
-      url: jdbc:mysql://dev-db-server:3306/nexus_ai_dev
-
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-storage:
-  datasource:
-    core:
-      url: jdbc:mysql://dev-db-server:3306/nexus_ai_dev
-
-
----
-spring:
-  config:
-    activate:
-      on-profile: staging
-
-storage:
-  datasource:
-    core:
-      url: jdbc:mysql://staging-db-server:3306/nexus_ai_staging
-
----
-spring:
-  config:
-    activate:
-      on-profile: live
-storage:
-  datasource:
-    core:
-      url: jdbc:mysql://prod-db-server:3306/nexus_ai_prod
+      url: jdbc:mysql://localhost:3306/tft_nexus_ai_db?serverTimezone=UTC&characterEncoding=UTF-8
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 5
+        idle-timeout: 300000
+        connection-timeout: 20000
+        validation-timeout: 5000

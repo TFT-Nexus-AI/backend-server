@@ -23,15 +23,6 @@ server:
       max: 600
       min-spare: 100
 
-  
-  # 데이터베이스 설정 (storage 모듈용)
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
-
 ---
 spring:
   config:
