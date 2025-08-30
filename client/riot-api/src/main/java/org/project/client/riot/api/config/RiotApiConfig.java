@@ -16,7 +16,7 @@ public class RiotApiConfig {
     @Qualifier("accountApiWebClient")
     public WebClient accountApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
         return webClientBuilder
-                .baseUrl(properties.baseUrl().account()) // account base url 사용
+                .baseUrl(properties.baseUrl().account().toString()) // account base url 사용
                 .defaultHeader("X-Riot-Token", properties.key())
                 .build();
     }
@@ -25,7 +25,7 @@ public class RiotApiConfig {
     @Qualifier("summonerApiWebClient")
     public WebClient summonerApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
         return webClientBuilder
-                .baseUrl(properties.baseUrl().summoner()) // summoner base url 사용
+                .baseUrl(properties.baseUrl().summoner().toString()) // summoner base url 사용
                 .defaultHeader("X-Riot-Token", properties.key())
                 .build();
     }

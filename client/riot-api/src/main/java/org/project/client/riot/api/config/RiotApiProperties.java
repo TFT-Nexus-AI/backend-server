@@ -7,6 +7,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "riot.api")
 public record RiotApiProperties(
         String key,
+        String defaultRegion,
         BaseUrl baseUrl
 ) {
     public record BaseUrl(

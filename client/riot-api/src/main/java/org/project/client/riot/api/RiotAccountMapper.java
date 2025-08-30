@@ -16,11 +16,8 @@ public class RiotAccountMapper {
 
     SummonerInfo toDomain(SummonerInfoDto dto) {
         return SummonerInfo.create(
-                dto.getId(),
-                dto.getAccountId(),
-                dto.getPuuid(),
-                dto.getProfileIconId(),
-                dto.getSummonerLevel()
+                dto.id(),
+                dto.accountId(), dto.puuid(), dto.profileIconId(), dto.summonerLevel()
         );
     }
 }

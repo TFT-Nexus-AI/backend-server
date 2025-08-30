@@ -3,7 +3,6 @@ package org.project.domain.match;
 import lombok.RequiredArgsConstructor;
 
 import org.project.domain.user.User;
-import org.project.domain.user.UserAppender;
 import org.project.domain.user.UserProcessor;
 import org.project.domain.user.UserReader;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,16 @@ public class MatchService {
 
 
     public List<Match> getMatches(String gameName, String tagLine, int count) {
+        // 1. 사용자 조회 또는 생성
         User user = userProcessor.getOrRegister(gameName, tagLine);
-        List<Match> existMatch = matchReader.read(user.getPuuid(), count);
 
-        return matchProcessor.
+        // 2. 매치 조회 및 동기화
+        return matchProcessor.getOrSync(user, count);
+    }
+
+    public List<Match> getRecentMatches(String gameName, String tagLine) {
+        User user = userReader.read(gameName, tagLine);
+        return matchReader.readRecent(user.getPuuid(), 10);
     }
 }
 

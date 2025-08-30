@@ -33,7 +33,10 @@ public class UserRepositoryImpl implements UserRepository {
         return savedEntity.toDomain();
     }
 
-
+    @Override
+    public boolean existByPuuid(String puuid) {
+        return false;
+    }
 
 
 }
