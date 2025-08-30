@@ -12,21 +12,26 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableConfigurationProperties(RiotApiProperties.class)
 public class RiotApiConfig {
 
-    @Bean
-    @Qualifier("accountApiWebClient")
-    public WebClient accountApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
-        return webClientBuilder
-                .baseUrl(properties.baseUrl().account().toString()) // account base url 사용
-                .defaultHeader("X-Riot-Token", properties.key())
-                .build();
-    }
+	@Bean
+	@Qualifier("accountApiWebClient")
+	public WebClient accountApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
+		return webClientBuilder.baseUrl(properties.baseUrl().account().toString()) // account
+																					// base
+																					// url
+																					// 사용
+			.defaultHeader("X-Riot-Token", properties.key())
+			.build();
+	}
 
-    @Bean
-    @Qualifier("summonerApiWebClient")
-    public WebClient summonerApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
-        return webClientBuilder
-                .baseUrl(properties.baseUrl().summoner().toString()) // summoner base url 사용
-                .defaultHeader("X-Riot-Token", properties.key())
-                .build();
-    }
+	@Bean
+	@Qualifier("summonerApiWebClient")
+	public WebClient summonerApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
+		return webClientBuilder.baseUrl(properties.baseUrl().summoner().toString()) // summoner
+																					// base
+																					// url
+																					// 사용
+			.defaultHeader("X-Riot-Token", properties.key())
+			.build();
+	}
+
 }

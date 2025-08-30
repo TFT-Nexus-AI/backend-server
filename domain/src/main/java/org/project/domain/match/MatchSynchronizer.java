@@ -10,31 +10,31 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class MatchSynchronizer {
-    private final RiotMatchClient riotMatchClient;
-    private final MatchAppender matchAppender;
-    private final MatchReader matchReader;
 
+	private final RiotMatchClient riotMatchClient;
 
-    public List<Match> sync(String puuid, int count) {
+	private final MatchAppender matchAppender;
 
-        // Riot API에서 매치 ID 목록 조회
-        List<String> matchIds = riotMatchClient.getMatchIdsByPuuid(puuid, count);
+	private final MatchReader matchReader;
 
-        // 이미 저장된 매치 필터링
-        List<String> newMatchIds = matchIds.stream()
-                .filter(id -> !matchReader.exists(id))
-                .collect(Collectors.toList());
+	public List<Match> sync(String puuid, int count) {
 
-        // 새로운 매치만 상세 정보 조회 및 저장
-        List<Match> newMatches = new ArrayList<>();
-        for (String matchId : newMatchIds) {
-            Match match = riotMatchClient.getMatchDetails(matchId);
-            Match saved = matchAppender.append(match);
-            newMatches.add(saved);
-        }
+		// Riot API에서 매치 ID 목록 조회
+		List<String> matchIds = riotMatchClient.getMatchIdsByPuuid(puuid, count);
 
-        return newMatches;
+		// 이미 저장된 매치 필터링
+		List<String> newMatchIds = matchIds.stream().filter(id -> !matchReader.exists(id)).collect(Collectors.toList());
 
+		// 새로운 매치만 상세 정보 조회 및 저장
+		List<Match> newMatches = new ArrayList<>();
+		for (String matchId : newMatchIds) {
+			Match match = riotMatchClient.getMatchDetails(matchId);
+			Match saved = matchAppender.append(match);
+			newMatches.add(saved);
+		}
 
-    }
+		return newMatches;
+
+	}
+
 }

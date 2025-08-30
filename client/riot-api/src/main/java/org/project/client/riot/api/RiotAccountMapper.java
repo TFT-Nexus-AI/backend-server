@@ -6,18 +6,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RiotAccountMapper {
-    User toDomain(AccountDto dto) {
-        return User.create(
-                dto.puuid(),
-                dto.gameName(),
-                dto.tagLine()
-        );
-    }
 
-    SummonerInfo toDomain(SummonerInfoDto dto) {
-        return SummonerInfo.create(
-                dto.id(),
-                dto.accountId(), dto.puuid(), dto.profileIconId(), dto.summonerLevel()
-        );
-    }
+	User toDomain(AccountDto dto) {
+		return User.create(dto.puuid(), dto.gameName(), dto.tagLine());
+	}
+
+	SummonerInfo toDomain(SummonerInfoDto dto) {
+		return SummonerInfo.create(dto.id(), dto.accountId(), dto.puuid(), dto.profileIconId(), dto.summonerLevel());
+	}
+
 }

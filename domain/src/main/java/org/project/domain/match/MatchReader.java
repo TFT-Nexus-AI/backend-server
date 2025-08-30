@@ -10,22 +10,24 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class MatchReader {
-    private final MatchRepository matchRepository;
 
-    public List<Match> read(String puuid, int count) {
-        return matchRepository.findByUserPuuidOrderByGameDatetimeDesc(puuid, count);
-    }
+	private final MatchRepository matchRepository;
 
-    public List<Match> readRecent(String puuid, int days) {
-        LocalDateTime since = LocalDateTime.now().minusDays(days);
-        return matchRepository.findRecentMatches(puuid, since);
-    }
+	public List<Match> read(String puuid, int count) {
+		return matchRepository.findByUserPuuidOrderByGameDatetimeDesc(puuid, count);
+	}
 
-    public Optional<Match> find(String matchId) {
-        return matchRepository.findByMatchId(matchId);
-    }
+	public List<Match> readRecent(String puuid, int days) {
+		LocalDateTime since = LocalDateTime.now().minusDays(days);
+		return matchRepository.findRecentMatches(puuid, since);
+	}
 
-    public boolean exists(String matchId) {
-        return matchRepository.existsByMatchId(matchId);
-    }
+	public Optional<Match> find(String matchId) {
+		return matchRepository.findByMatchId(matchId);
+	}
+
+	public boolean exists(String matchId) {
+		return matchRepository.existsByMatchId(matchId);
+	}
+
 }

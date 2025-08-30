@@ -8,15 +8,17 @@ import java.util.Optional;
 
 @Repository
 public interface MatchRepository {
-    List<Match> findByUserPuuidOrderByGameDatetimeDesc(String puuid, int limit);
 
-    Optional<Match> findByMatchId(String matchId);
+	List<Match> findByUserPuuidOrderByGameDatetimeDesc(String puuid, int limit);
 
-    Match save(Match match);
+	Optional<Match> findByMatchId(String matchId);
 
-    boolean existsByMatchId(String matchId);
+	Match save(Match match);
 
-    List<Match> findRecentMatches(String puuid, LocalDateTime since);
+	boolean existsByMatchId(String matchId);
 
-    List<Match> saveAll(List<Match> newMatches);
+	List<Match> findRecentMatches(String puuid, LocalDateTime since);
+
+	List<Match> saveAll(List<Match> newMatches);
+
 }

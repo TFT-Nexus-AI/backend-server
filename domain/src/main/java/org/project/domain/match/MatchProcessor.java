@@ -12,36 +12,37 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class MatchProcessor {
-    private final MatchReader matchReader;
-    private final MatchAppender matchAppender;
-    private final MatchSynchronizer matchSynchronizer;
 
-    @Transactional
-    public List<Match> getOrSync(User user, int count) {
-        // 기존 매치 조회
-        List<Match> existingMatches = matchReader.read(user.getPuuid(), count);
+	private final MatchReader matchReader;
 
-        // 충분한 데이터가 있으면 바로 반환
-        if (existingMatches.size() >= count) {
-            return existingMatches.stream()
-                    .limit(count)
-                    .collect(Collectors.toList());
-        }
+	private final MatchAppender matchAppender;
 
-        // 부족한 만큼 동기화
-        int needed = count - existingMatches.size();
-        List<Match> syncedMatches = matchSynchronizer.sync(user.getPuuid(), needed);
+	private final MatchSynchronizer matchSynchronizer;
 
-        // 병합 후 반환
-        return mergeAndSort(existingMatches, syncedMatches, count);
-    }
+	@Transactional
+	public List<Match> getOrSync(User user, int count) {
+		// 기존 매치 조회
+		List<Match> existingMatches = matchReader.read(user.getPuuid(), count);
 
-    private List<Match> mergeAndSort(List<Match> existing, List<Match> synced, int limit) {
-        return Stream.concat(existing.stream(), synced.stream())
-                .distinct()
-                .sorted((a, b) -> b.getGameDateTime().compareTo(a.getGameDateTime()))
-                .limit(limit)
-                .collect(Collectors.toList());
-    }
+		// 충분한 데이터가 있으면 바로 반환
+		if (existingMatches.size() >= count) {
+			return existingMatches.stream().limit(count).collect(Collectors.toList());
+		}
+
+		// 부족한 만큼 동기화
+		int needed = count - existingMatches.size();
+		List<Match> syncedMatches = matchSynchronizer.sync(user.getPuuid(), needed);
+
+		// 병합 후 반환
+		return mergeAndSort(existingMatches, syncedMatches, count);
+	}
+
+	private List<Match> mergeAndSort(List<Match> existing, List<Match> synced, int limit) {
+		return Stream.concat(existing.stream(), synced.stream())
+			.distinct()
+			.sorted((a, b) -> b.getGameDateTime().compareTo(a.getGameDateTime()))
+			.limit(limit)
+			.collect(Collectors.toList());
+	}
 
 }

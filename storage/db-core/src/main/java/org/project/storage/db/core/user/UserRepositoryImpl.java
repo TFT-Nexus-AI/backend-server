@@ -8,35 +8,34 @@ import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    private final UserJpaRepository userJpaRepository;
 
-    public UserRepositoryImpl(UserJpaRepository userJpaRepository) {
-        this.userJpaRepository = userJpaRepository;
-    }
+	private final UserJpaRepository userJpaRepository;
 
-    @Override
-    public boolean existByGameNameAndTagLine(String gameName, String tagLine) {
-        return userJpaRepository.existsByGameNameAndTagLine(gameName, tagLine);
-    }
+	public UserRepositoryImpl(UserJpaRepository userJpaRepository) {
+		this.userJpaRepository = userJpaRepository;
+	}
 
-    @Override
-    public Optional<User> findByGameNameAndTagLine(String gameName, String tagLine) {
+	@Override
+	public boolean existByGameNameAndTagLine(String gameName, String tagLine) {
+		return userJpaRepository.existsByGameNameAndTagLine(gameName, tagLine);
+	}
 
-        return userJpaRepository.findByGameNameAndTagLine(gameName, tagLine)
-                .map(UserEntity::toDomain);
-    }
+	@Override
+	public Optional<User> findByGameNameAndTagLine(String gameName, String tagLine) {
 
-    @Override
-    public User save(User user) {
-        UserEntity entity = UserEntity.fromDomain(user);
-        UserEntity savedEntity = userJpaRepository.save(entity);
-        return savedEntity.toDomain();
-    }
+		return userJpaRepository.findByGameNameAndTagLine(gameName, tagLine).map(UserEntity::toDomain);
+	}
 
-    @Override
-    public boolean existByPuuid(String puuid) {
-        return false;
-    }
+	@Override
+	public User save(User user) {
+		UserEntity entity = UserEntity.fromDomain(user);
+		UserEntity savedEntity = userJpaRepository.save(entity);
+		return savedEntity.toDomain();
+	}
 
+	@Override
+	public boolean existByPuuid(String puuid) {
+		return false;
+	}
 
 }

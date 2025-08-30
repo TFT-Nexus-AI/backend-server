@@ -5,15 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "riot.api")
-public record RiotApiProperties(
-        String key,
-        String defaultRegion,
-        BaseUrl baseUrl
-) {
-    public record BaseUrl(
-            Map<String, String> account,
-            Map<String, String> summoner,
-            Map<String, String> tftMatch
-    ) {
-    }
+public record RiotApiProperties(String key, String defaultRegion, BaseUrl baseUrl) {
+	public record BaseUrl(Map<String, String> account, Map<String, String> summoner, Map<String, String> tftMatch) {
+	}
 }
