@@ -11,8 +11,9 @@ spring:
   config:
     import:
       - optional:file:.env[.properties]
-      - storage-db-core.yml
+      - db-core.yml
       - client-riot-api.yml
+
 
 server:
   port: 8080

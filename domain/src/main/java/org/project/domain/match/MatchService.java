@@ -3,7 +3,7 @@ package org.project.domain.match;
 import lombok.RequiredArgsConstructor;
 
 import org.project.domain.user.User;
-import org.project.domain.user.UserCreator;
+import org.project.domain.user.UserAppender;
 import org.project.domain.user.UserReader;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchService {
     private final UserReader userReader;
-    private final UserCreator userCreator;
+    private final UserAppender userCreator;
     private final MatchReader matchReader;
     private final MatchProcessor matchProcessor;
 

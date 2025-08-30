@@ -11,11 +11,18 @@ import java.util.Optional;
 public class UserReader {
     private final UserRepository userRepository;
 
+    public User read(String gameName, String tagLine) {
+        return userRepository.findByGameNameAndTagLine(gameName, tagLine).orElseThrow(() -> new UserNotFoundException(gameName, tagLine));
+    }
 
-    public Optional<User> read(String gameName, String tagLine) {
+
+    public Optional<User> find(String gameName, String tagLine) {
 
         return userRepository.findByGameNameAndTagLine(gameName, tagLine);
 
+    }
 
+    public boolean exist(String gameName, String tagLine) {
+        return userRepository.existByGameNameAndTagLine(gameName, tagLine);
     }
 }

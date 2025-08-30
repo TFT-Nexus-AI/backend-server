@@ -1,5 +1,6 @@
 package org.project.client.riot.api;
 
+import lombok.RequiredArgsConstructor;
 import org.project.domain.exception.MatchNotFoundException;
 import org.project.domain.match.Match;
 import org.project.domain.match.RiotMatchClient;
@@ -13,15 +14,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class RiotMatchClientImpl implements RiotMatchClient {
-    private final WebClient webClient;
-
-    public RiotMatchClientImpl(WebClient.Builder webClientBuilder, @Value("${riot.api.url.asia}") String riotApiUrl, @Value("${riot.api.key}") String apiKey) {
-        this.webClient = webClientBuilder
-                .baseUrl(riotApiUrl)
-                .defaultHeader("X-Riot-Token", apiKey)
-                .build();
-    }
+    private final RiotWebClient webClient;
 
     @Override
     public List<String> getMatchIdsByPuuid(String puuid, int count) {
