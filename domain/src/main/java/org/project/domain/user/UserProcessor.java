@@ -23,7 +23,7 @@ public class UserProcessor {
         }
 
         // Riot API에서 사용자 정보 조회 후 등록
-        User newUser = riotUserClient.getUserFromRiotApi(gameName, tagLine);
+        User newUser = riotUserClient.fetchUser(gameName, tagLine);
         return userAppender.append(newUser);
     }
 
@@ -33,7 +33,7 @@ public class UserProcessor {
             throw new UserAlreadyExistException(gameName, tagLine);
         }
 
-        User user = riotUserClient.getUserFromRiotApi(gameName, tagLine);
+        User user = riotUserClient.fetchUser(gameName, tagLine);
         return userAppender.append(user);
     }
 }
