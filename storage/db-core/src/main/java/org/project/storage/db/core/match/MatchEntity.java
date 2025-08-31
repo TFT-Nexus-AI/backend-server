@@ -6,13 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.project.storage.db.core.BaseEntity;
+import org.project.storage.db.core.CreatableEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "matches")
-public class MatchEntity extends BaseEntity {
-
+public class MatchEntity extends CreatableEntity {
 
 	@Column(unique = true, nullable = false, length = 50)
 	private String matchId;
@@ -27,10 +27,10 @@ public class MatchEntity extends BaseEntity {
 	private String gameVersion;
 
 	@Column(nullable = false, length = 50)
-	private String tftSet;
+	private int tftSet;
 
 	@Builder
-	private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, String tftSet) {
+	private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
 		this.matchId = matchId;
 		this.gameDatetime = gameDatetime;
 		this.gameLength = gameLength;

@@ -12,26 +12,30 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableConfigurationProperties(RiotApiProperties.class)
 public class RiotApiConfig {
 
-	@Bean
-	@Qualifier("accountApiWebClient")
-	public WebClient accountApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
-		return webClientBuilder.baseUrl(properties.baseUrl().account().toString()) // account
-																					// base
-																					// url
-																					// 사용
-			.defaultHeader("X-Riot-Token", properties.key())
-			.build();
-	}
+    @Bean
+    @Qualifier("accountApiWebClient")
+    public WebClient accountApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
+        // 기본 지역의 URL을 사용
+        String baseUrl = properties.baseUrl().account().get(properties.defaultRegion());
+        if (baseUrl == null) {
+            throw new IllegalArgumentException("No account URL found for default region: " + properties.defaultRegion());
+        }
+        return webClientBuilder.baseUrl(baseUrl)
+                .defaultHeader("X-Riot-Token", properties.key())
+                .build();
 
-	@Bean
-	@Qualifier("summonerApiWebClient")
-	public WebClient summonerApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
-		return webClientBuilder.baseUrl(properties.baseUrl().summoner().toString()) // summoner
-																					// base
-																					// url
-																					// 사용
-			.defaultHeader("X-Riot-Token", properties.key())
-			.build();
-	}
+    }
+
+    @Bean
+    @Qualifier("summonerApiWebClient")
+    public WebClient summonerApiWebClient(WebClient.Builder webClientBuilder, RiotApiProperties properties) {
+        String baseUrl = properties.baseUrl().summoner().get("kr"); // 기본으로 한국 사용
+        if (baseUrl == null) {
+            throw new IllegalArgumentException("No summoner URL found for region: kr");
+        }
+        return webClientBuilder.baseUrl(baseUrl)
+                .defaultHeader("X-Riot-Token", properties.key())
+                .build();
+    }
 
 }

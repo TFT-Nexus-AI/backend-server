@@ -8,27 +8,29 @@ import java.time.LocalDateTime;
 
 @MappedSuperclass
 public abstract class BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @CreationTimestamp
-    @Column
-    private LocalDateTime createdAt;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @UpdateTimestamp
-    @Column
-    private LocalDateTime updatedAt;
+	@CreationTimestamp
+	@Column
+	private LocalDateTime createdAt;
 
-    public Long getId() {
-        return id;
-    }
+	@UpdateTimestamp
+	@Column
+	private LocalDateTime updatedAt;
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
 }

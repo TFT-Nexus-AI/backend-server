@@ -9,6 +9,8 @@ dependencies {
     // 웹 애플리케이션 구성을 위한 의존성
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework:spring-tx'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     testRuntimeOnly 'com.h2database:h2'
+
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
 }

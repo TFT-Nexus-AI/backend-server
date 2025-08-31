@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 @Builder
 public record MatchResponseDto(String matchId, @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime gameDateTime,
-		Float gameLength, String gameVersion, String tftSet, Boolean isRecentMatch, Boolean isLongMatch,
+		Float gameLength, String gameVersion, int tftSet, Boolean isRecentMatch, Boolean isLongMatch,
 		String gameLengthFormatted) {
 	public static MatchResponseDto from(Match match) {
 		return MatchResponseDto.builder()
