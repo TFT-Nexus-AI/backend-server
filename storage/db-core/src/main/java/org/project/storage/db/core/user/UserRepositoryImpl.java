@@ -1,5 +1,6 @@
 package org.project.storage.db.core.user;
 
+import lombok.RequiredArgsConstructor;
 import org.project.domain.user.User;
 import org.project.domain.user.UserRepository;
 import org.springframework.stereotype.Repository;
@@ -7,13 +8,12 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
-	public UserRepositoryImpl(UserJpaRepository userJpaRepository) {
-		this.userJpaRepository = userJpaRepository;
-	}
+
 
 	@Override
 	public boolean existByGameNameAndTagLine(String gameName, String tagLine) {

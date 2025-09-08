@@ -1,21 +1,29 @@
 package org.project.domain.match;
 
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
+import org.project.domain.user.Participant;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 @Getter
-@Builder
-@EqualsAndHashCode(of = "matchId")
 public class Match {
 
     private final Long id;
 
     private final String matchId;
+
+    private final int queueId;
+
+    private final Long gameId;
+
+    private final String dataVersion;
+
+    private final Long gameCreation;
 
     private final Long gameDatetime;
 
@@ -23,31 +31,37 @@ public class Match {
 
     private final String gameVersion;
 
-    private final int tftSet;
+    private final int tftSetNumber;
 
-    private Match(Long id, String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
+    private final List<Participant> participants;
+
+
+    @Builder
+    private Match(Long id, String matchId, int queueId, Long gameId, String dataVersion, Long gameCreation, Long gameDatetime, Float gameLength, String gameVersion, int tftSetNumber, List<Participant> participants) {
+        this.queueId = queueId;
+        this.gameId = gameId;
+        this.dataVersion = dataVersion;
+        this.gameCreation = gameCreation;
+        this.tftSetNumber = tftSetNumber;
+        this.participants = participants;
         validateMatchId(matchId);
         validateGameDatetime(gameDatetime);
         validateGameLength(gameLength);
         validateGameVersion(gameVersion);
-        validateTftSet(tftSet);
+        validateTftSet(tftSetNumber);
 
         this.id = id;
         this.matchId = matchId;
         this.gameDatetime = gameDatetime;
         this.gameLength = gameLength;
         this.gameVersion = gameVersion;
-        this.tftSet = tftSet;
+
     }
 
-    public static Match create(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
-        return new Match(null, matchId, gameDatetime, gameLength, gameVersion, tftSet);
+    public static Match create(String matchId, Long gameDatetime, Float gameLength, String gameVersion) {
+        return Match.builder().matchId(matchId).gameDatetime(gameDatetime).gameLength(gameLength).gameVersion(gameVersion).build();
     }
 
-    public static Match of(Long id, String matchId, Long gameDatetime, Float gameLength, String gameVersion,
-                           int tftSet) {
-        return new Match(id, matchId, gameDatetime, gameLength, gameVersion, tftSet);
-    }
 
     public LocalDateTime getGameDateTime() {
         return gameDatetime != null ? LocalDateTime.ofInstant(Instant.ofEpochMilli(gameDatetime), ZoneOffset.UTC)

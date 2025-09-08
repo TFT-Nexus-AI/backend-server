@@ -1,5 +1,6 @@
 package org.project.storage.db.core.match;
 
+import lombok.RequiredArgsConstructor;
 import org.project.domain.match.Match;
 import org.project.domain.match.MatchRepository;
 import org.springframework.stereotype.Repository;
@@ -9,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class MatchRepositoryImpl implements MatchRepository {
+    private final MatchJpaRepository matchJpaRepository;
+
     @Override
     public List<Match> findByUserPuuidOrderByGameDatetimeDesc(String puuid, int limit) {
-        return List.of();
+        return  matchJpaRepository.findByUserPuuidOrderByGameDatetimeDesc(puuid,limit);
     }
 
     @Override

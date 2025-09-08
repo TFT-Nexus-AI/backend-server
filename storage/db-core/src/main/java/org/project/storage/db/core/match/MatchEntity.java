@@ -14,28 +14,29 @@ import org.project.storage.db.core.CreatableEntity;
 @Table(name = "matches")
 public class MatchEntity extends CreatableEntity {
 
-	@Column(unique = true, nullable = false, length = 50)
-	private String matchId;
 
-	@Column(nullable = false)
-	private Long gameDatetime;
+    @Column(unique = true, nullable = false, length = 50)
+    private String matchId;
 
-	@Column(nullable = false)
-	private Float gameLength;
+    @Column(nullable = false)
+    private Long gameDatetime;
 
-	@Column(nullable = false, length = 20)
-	private String gameVersion;
+    @Column(nullable = false)
+    private Float gameLength;
 
-	@Column(nullable = false, length = 50)
-	private int tftSet;
+    @Column(nullable = false, length = 20)
+    private String gameVersion;
 
-	@Builder
-	private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
-		this.matchId = matchId;
-		this.gameDatetime = gameDatetime;
-		this.gameLength = gameLength;
-		this.gameVersion = gameVersion;
-		this.tftSet = tftSet;
-	}
+    @Column(nullable = false, length = 50)
+    private int tftSet;
+
+    @Builder
+    private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
+        this.matchId = matchId;
+        this.gameDatetime = gameDatetime;
+        this.gameLength = gameLength;
+        this.gameVersion = gameVersion;
+        this.tftSet = tftSet;
+    }
 
 }
