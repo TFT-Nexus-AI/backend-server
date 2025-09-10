@@ -6,54 +6,43 @@ import org.project.client.riot.api.config.RiotApiProperties;
 import org.project.domain.match.Match;
 import org.project.domain.match.RiotMatchClient;
 
+import org.project.domain.match.vo.MatchData;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class RiotMatchClientImpl implements RiotMatchClient {
 
-	private final RiotWebClient webClient;
+    private final RiotWebClient webClient;
 
-	private final RiotApiProperties properties;
+    private final RiotApiProperties properties;
 
-	@Override
-	public List<String> getMatchIdsByPuuid(String puuid, int count) {
-		Region region = getMatchRegion();
+    private final MatchApiMapper mapper;
 
-		List<String> matchIds = webClient.getMatchIds(puuid, count, region);
-		log.info("Fetched {} match IDs for puuid: {} from region: {}", matchIds.size(), puuid, region);
 
-		return matchIds;
-	}
+    /**
+     * Match API용 Region 결정 Match API는 지역별 구체적인 엔드포인트 사용
+     */
+    private Region getMatchRegion() {
+        String defaultRegion = properties.defaultRegion();
 
-	@Override
-	public Match getMatchDetails(String matchId) {
-		Region region = getMatchRegion();
+        try {
+            return Region.valueOf(defaultRegion.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid region for Match API: {}, using default ASIA", defaultRegion);
+            return Region.ASIA;
+        }
+    }
 
-		MatchDto response = webClient.getMatch(matchId, region);
-		log.info("Fetched match details for matchId: {} from region: {}", matchId, region);
+    @Override
+    public Optional<MatchData> findMatchById(String matchId) {
+        Region region = getMatchRegion();
+        Optional<MatchDto> matchDtoOptional = Optional.ofNullable(webClient.getMatch(matchId, region));
 
-		// DTO → Domain 변환
-		return Match.create(response.matchId(), response.gameDatetime(), response.gameLength(), response.gameVersion(),
-				response.tftSet());
-	}
-
-	/**
-	 * Match API용 Region 결정 Match API는 지역별 구체적인 엔드포인트 사용
-	 */
-	private Region getMatchRegion() {
-		String defaultRegion = properties.defaultRegion();
-
-		try {
-			return Region.valueOf(defaultRegion.toUpperCase());
-		}
-		catch (IllegalArgumentException e) {
-			log.warn("Invalid region for Match API: {}, using default KR", defaultRegion);
-			return Region.KR;
-		}
-	}
-
+        return matchDtoOptional.map(mapper::toMatchData);
+    }
 }

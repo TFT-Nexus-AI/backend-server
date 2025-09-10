@@ -1,11 +1,11 @@
 package org.project.domain.match;
 
-import java.util.List;
+import org.project.domain.match.vo.MatchData;
+
+import java.util.Optional;
 
 public interface RiotMatchClient {
 
-	List<String> getMatchIdsByPuuid(String puuid, int count);
-
-	Match getMatchDetails(String matchId);
+	Optional<MatchData> findMatchById(String matchId);
 
 }
