@@ -35,10 +35,10 @@ public class UserEntity extends BaseEntity {
 
 	public User toDomain() {
 		return User.builder()
-			.puuid(this.puuid)
-			.gameName(this.gameName)
-			.tagLine(this.tagLine)
-			.createdAt(this.createdAt)
+			.puuid(puuid)
+			.gameName(gameName)
+			.tagLine(tagLine)
+			.createdAt(createdAt)
 			.build();
 	}
 

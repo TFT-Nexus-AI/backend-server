@@ -1,15 +1,13 @@
 package org.project.storage.db.core.match;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.project.domain.match.Match;
 import org.project.storage.db.core.BaseEntity;
 import org.project.storage.db.core.CreatableEntity;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 @Entity
 @Table(name = "matches")
 public class MatchEntity extends CreatableEntity {
@@ -30,13 +28,32 @@ public class MatchEntity extends CreatableEntity {
     @Column(nullable = false, length = 50)
     private int tftSet;
 
-    @Builder
-    private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
-        this.matchId = matchId;
-        this.gameDatetime = gameDatetime;
-        this.gameLength = gameLength;
-        this.gameVersion = gameVersion;
-        this.tftSet = tftSet;
+//    @Builder
+//    private MatchEntity(String matchId, Long gameDatetime, Float gameLength, String gameVersion, int tftSet) {
+//        this.matchId = matchId;
+//        this.gameDatetime = gameDatetime;
+//        this.gameLength = gameLength;
+//        this.gameVersion = gameVersion;
+//        this.tftSet = tftSet;
+//    }
+
+    public  Match toDomain() {
+        return Match.builder()
+                .id(matchId)
+                .gameDatetime(gameDatetime)
+                .gameLength(gameLength)
+                .gameVersion(gameVersion)
+                .build();
+    }
+
+
+    public static MatchEntity fromDomain(Match match) {
+       MatchEntity entity = new MatchEntity();
+       entity.matchId = match.getId();
+       entity.gameDatetime = match.getGameDatetime();
+       entity.gameLength = match.getGameLength();
+       entity.gameVersion = match.getGameVersion();
+       return entity;
     }
 
 }
